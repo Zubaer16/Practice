@@ -1,0 +1,21 @@
+div {
+  background-color: black;
+  position: relative;
+  width: 640px;
+  height: 427px;
+}
+div::before {
+  content: 'Hi this is';
+  width: 640px;
+  height: 427px;
+  position: absolute;
+  display: block;
+  background-color: rgba(138, 165, 42, 0.2);
+  z-index: 2;
+  /* opacity: 0.4; */
+  display: grid;
+  place-items: Center;
+  font-size: 2rem;
+  font-weight: bold;
+  color: black;
+}
