@@ -1,5 +1,8 @@
 const pool = require('../../db')
 const queries = require('./queries')
+const JWT = require('jsonwebtoken')
+const dotenv = require('dotenv')
+dotenv.config()
 
 const getStudents = (req, res) => {
   pool.query(queries.getStudents, (error, results) => {
@@ -64,10 +67,61 @@ const updateStudent = (req, res) => {
   })
 }
 
+const getEmpUsers = (req, res) => {
+  pool.query(queries.getEmpUsers, (error, results) => {
+    if (error) throw error
+    res.status(200).json(results.rows)
+  })
+}
+
+const addEmpUsers = (req, res) => {
+  const { id, email, password } = req.body
+  //check if email exists
+  pool.query(queries.checkEmailExistsEmp, [email], (error, results) => {
+    //check if email exists
+    if (results.rows.length) {
+      res.send('Email already exists')
+    }
+    results.rows[0]
+    //add student to db
+    pool.query(queries.addEmpUsers, [id, email, password], (error, results) => {
+      if (error) throw error
+      res.status(201).send('Employee created successfully!')
+    })
+  })
+}
+
+const loginEmpUser = async (req, res) => {
+  const { email, password } = req.body
+  const result = await pool.query('SELECT * FROM emp_users where email = $1', [
+    email,
+  ])
+
+  const user = result.rows[0]
+
+  if (!user) {
+    return res.status(400).json({ message: 'Invalid email' })
+  }
+
+  if (user.password != req.body.password) {
+    return res
+      .status(400)
+      .json({ message: 'Username and password do not match' })
+  }
+
+  // const token = JWT.sign({ user }, process.env.SECRET_KEY, {
+  //   expiresIn: '1h',
+  // })
+  res.send(user)
+}
+
 module.exports = {
   getStudents,
   getStudentById,
   addStudent,
   removeStudent,
   updateStudent,
+  getEmpUsers,
+  addEmpUsers,
+  loginEmpUser,
 }
