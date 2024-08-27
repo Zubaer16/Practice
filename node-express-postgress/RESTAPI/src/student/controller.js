@@ -109,10 +109,10 @@ const loginEmpUser = async (req, res) => {
       .json({ message: 'Username and password do not match' })
   }
 
-  // const token = JWT.sign({ user }, process.env.SECRET_KEY, {
-  //   expiresIn: '1h',
-  // })
-  res.send(user)
+  const token = JWT.sign({ user }, process.env.SECRET_KEY, {
+    expiresIn: '1h',
+  })
+  res.send({ token })
 }
 
 module.exports = {
