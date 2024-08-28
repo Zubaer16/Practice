@@ -92,27 +92,73 @@ const addEmpUsers = (req, res) => {
 }
 
 const loginEmpUser = async (req, res) => {
-  const { email, password } = req.body
-  const result = await pool.query('SELECT * FROM emp_users where email = $1', [
-    email,
-  ])
+  try {
+    const { email, password } = req.body
+    const result = await pool.query(
+      'SELECT * FROM emp_users where email = $1',
+      [email]
+    )
 
-  const user = result.rows[0]
+    const user = result.rows[0]
 
-  if (!user) {
-    return res.status(400).json({ message: 'Invalid email' })
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email' })
+    }
+
+    if (user.password != req.body.password) {
+      return res
+        .status(400)
+        .json({ message: 'Username and password do not match' })
+    }
+
+    const token = JWT.sign({ user }, process.env.SECRET_KEY, {
+      expiresIn: '30s',
+    })
+    const refreshToken = JWT.sign({ user }, process.env.REFRESH_KEY, {
+      expiresIn: '1h',
+    })
+
+    res.send({ token, refreshToken })
+  } catch (error) {
+    console.error(error.message)
+    res.status(500).send('Server error')
+  }
+}
+
+function verifyToken(req, res, next) {
+  const token =
+    req.headers.authorization && req.headers.authorization.split(' ')[1]
+
+  if (!token) {
+    return res.status(401).json({ message: 'Missing token' })
   }
 
-  if (user.password != req.body.password) {
-    return res
-      .status(400)
-      .json({ message: 'Username and password do not match' })
+  try {
+    const decoded = JWT.verify(token, process.env.SECRET_KEY)
+    req.user = decoded
+    next()
+  } catch (error) {
+    console.error('Token verification failed:', error.message)
+    res.status(401).json({ message: 'Invalid token' })
+  }
+}
+
+function verifyRefreshToken(req, res, next) {
+  const token =
+    req.headers.authorization && req.headers.authorization.split(' ')[1]
+
+  if (!token) {
+    return res.status(401).json({ message: 'Missing token' })
   }
 
-  const token = JWT.sign({ user }, process.env.SECRET_KEY, {
-    expiresIn: '1h',
-  })
-  res.send({ token })
+  try {
+    const decoded = JWT.verify(token, process.env.REFRESH_KEY)
+    req.user = decoded
+    next()
+  } catch (error) {
+    console.error('Token verification failed:', error.message)
+    res.status(401).json({ message: 'Invalid token' })
+  }
 }
 
 module.exports = {
@@ -124,4 +170,6 @@ module.exports = {
   getEmpUsers,
   addEmpUsers,
   loginEmpUser,
+  verifyToken,
+  verifyRefreshToken,
 }
