@@ -2,6 +2,8 @@ const getStudents = 'SELECT * FROM students'
 const getStudentById = 'SELECT * FROM students where id = $1'
 const checkEmailExists = 'SELECT s FROM students s where s.email = $1'
 const checkEmailExistsEmp = 'SELECT s FROM emp_users s where s.email = $1'
+const checkUserRole =
+  'SELECT s FROM emp_users s where s.email = $1 and status = 1'
 const addStudent =
   'INSERT INTO students (name, email, age, dob) VALUES ($1, $2, $3, $4)'
 
@@ -21,4 +23,5 @@ module.exports = {
   getEmpUsers,
   addEmpUsers,
   checkEmailExistsEmp,
+  checkUserRole,
 }

@@ -160,7 +160,20 @@ function verifyRefreshToken(req, res, next) {
     res.status(401).json({ message: 'Invalid token' })
   }
 }
+const checkPermission = async (req, res, next) => {
+  const email = req.user.user.email // Extracted from JWT token
 
+  try {
+    const permission = await pool.query(queries.checkUserRole, [email])
+    const user = permission.rows
+    if (user.length === 0) {
+      return res.status(403).json({ message: 'Access denied' })
+    }
+    next()
+  } catch (err) {
+    res.status(400).json({ error: err.message })
+  }
+}
 module.exports = {
   getStudents,
   getStudentById,
@@ -172,4 +185,5 @@ module.exports = {
   loginEmpUser,
   verifyToken,
   verifyRefreshToken,
+  checkPermission,
 }
