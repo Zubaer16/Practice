@@ -21,7 +21,7 @@ router.get(
   controller.getStudentById
 )
 router.get(
-  'refresh/:id',
+  '/refresh/:id',
   controller.verifyRefreshToken,
   controller.checkPermission,
   controller.getStudentById
@@ -33,7 +33,7 @@ router.post(
   controller.addStudent
 )
 router.post(
-  'refresh/',
+  '/refresh/',
   controller.verifyRefreshToken,
   controller.checkPermission,
   controller.addStudent
@@ -45,8 +45,8 @@ router.put(
   controller.updateStudent
 )
 router.put(
-  'refresh/:id',
-  controller.verifyToken,
+  '/refresh/:id',
+  controller.verifyRefreshToken,
   controller.checkPermission,
   controller.updateStudent
 )
@@ -57,7 +57,7 @@ router.delete(
   controller.removeStudent
 )
 router.delete(
-  'refresh/:id',
+  '/refresh/:id',
   controller.verifyRefreshToken,
   controller.checkPermission,
   controller.removeStudent
