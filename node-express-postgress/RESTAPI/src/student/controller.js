@@ -112,7 +112,7 @@ const loginEmpUser = async (req, res) => {
     }
 
     const token = JWT.sign({ user }, process.env.SECRET_KEY, {
-      expiresIn: '30s',
+      expiresIn: '1h',
     })
     const refreshToken = JWT.sign({ user }, process.env.REFRESH_KEY, {
       expiresIn: '1h',
