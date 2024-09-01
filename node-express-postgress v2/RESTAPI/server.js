@@ -1,6 +1,6 @@
 import express from 'express'
-import db from './db/db.js'
-import { users } from './db/schema.js'
+import db from './db/db_connection.js'
+import { users, user_information } from './db/schema.js'
 
 const app = express()
 
@@ -17,6 +17,15 @@ app.listen(port, () => {
 app.get('/users', async (req, res) => {
   try {
     const allUsers = await db.select().from(users).execute()
+    res.json(allUsers)
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch users' })
+  }
+})
+
+app.get('/user_information', async (req, res) => {
+  try {
+    const allUsers = await db.select().from(user_information).execute()
     res.json(allUsers)
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' })
