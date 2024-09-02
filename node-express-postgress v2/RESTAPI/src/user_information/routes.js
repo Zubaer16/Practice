@@ -9,17 +9,19 @@ import {
 import {
   getAllPermission,
   getSinglePermission,
+  getToken,
   login,
   verifyToken,
 } from './auth.js'
 
 const router = Router()
 
-router.post('/', verifyToken, getAllPermission, addUserInfo)
 router.get('/', verifyToken, getAllPermission, allUsers)
 router.get('/:id', verifyToken, getSinglePermission, getUserbyId)
-router.put('/:id', verifyToken, getSinglePermission, putUserbyId)
+router.post('/getRefreshtoken', getToken)
+router.post('/', verifyToken, getAllPermission, addUserInfo)
 router.post('/login', login)
+router.put('/:id', verifyToken, getSinglePermission, putUserbyId)
 router.delete('/:id', verifyToken, getSinglePermission, deleteUserById)
 
 export default router

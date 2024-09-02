@@ -1,5 +1,5 @@
 import JWT from 'jsonwebtoken'
-import { user_information, users } from '../../db/schema.js'
+import { users } from '../../db/schema.js'
 import db from '../../db/db_connection.js'
 import { eq } from 'drizzle-orm'
 import dotenv from 'dotenv'
@@ -38,6 +38,7 @@ export const login = async (req, res) => {
 export function verifyToken(req, res, next) {
   const token =
     req.headers.authorization && req.headers.authorization.split(' ')[1]
+  console.log(token)
 
   if (!token) {
     return res.status(401).json({ message: 'Missing token' })
@@ -96,4 +97,40 @@ export const getSinglePermission = async (req, res, next) => {
   }
 }
 
-export const getToken = async (req, res) => {}
+export const getToken = async (req, res) => {
+  const { refreshToken } = req.body
+
+  //   res.json(refreshToken)
+  if (!refreshToken) {
+    return res.status(400).json({ message: 'Refresh token is required.' })
+  }
+
+  try {
+    // Verify the refresh token
+    const decoded = JWT.verify(refreshToken, process.env.REFRESH_TOKEN)
+
+    // Generate a new access token
+    const accessToken = JWT.sign(
+      { userId: decoded.userId },
+      process.env.ACCESS_TOKEN,
+      { expiresIn: '1h' } // Example: 15 minutes expiration
+    )
+
+    // Optionally generate a new refresh token
+    const newRefreshToken = JWT.sign(
+      { userId: decoded.userId },
+      process.env.REFRESH_TOKEN,
+      { expiresIn: '2h' } // Example: 7 days expiration
+    )
+
+    // Send the new tokens in the response
+    return res.json({
+      accessToken,
+      refreshToken: newRefreshToken, // Send the new refresh token
+    })
+  } catch (error) {
+    return res
+      .status(401)
+      .json({ message: 'Invalid or expired refresh token.' })
+  }
+}
