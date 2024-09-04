@@ -7,6 +7,11 @@ import { slateEditor } from '@payloadcms/richtext-slate'
 import { buildConfig } from 'payload/config'
 
 import Users from './collections/Users'
+import { Posts } from './collections/Posts'
+import { Comments } from './collections/Comments'
+import { customApi } from './api/customApi'
+import { Organizations } from './collections/Organizations'
+import { Applicants } from './collections/Applicants'
 
 export default buildConfig({
   admin: {
@@ -14,7 +19,7 @@ export default buildConfig({
     bundler: webpackBundler(),
   },
   editor: slateEditor({}),
-  collections: [Users],
+  collections: [Users, Posts, Comments, Organizations, Applicants],
   typescript: {
     outputFile: path.resolve(__dirname, 'payload-types.ts'),
   },
@@ -27,4 +32,7 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI,
     },
   }),
+  onInit: async (payload) => {
+    customApi(payload.express, payload)
+  },
 })
