@@ -7,13 +7,16 @@ dotenv.config()
 
 export const addUserInfo = async (req, res) => {
   try {
-    // const userId = parseInt(req.body.id)
     const name = req.body.name
     const address = req.body.address
+    const admin_id = parseInt(req.user.id)
 
-    await db.insert(user_information).values({ name: name, address: address })
+    await db
+      .insert(user_information)
+      .values({ name: name, address: address, admin_id: admin_id })
     res.json('User added successfully')
   } catch (error) {
+    console.log(error)
     res.status(500).json({ error: 'Failed to fetch users' })
   }
 }

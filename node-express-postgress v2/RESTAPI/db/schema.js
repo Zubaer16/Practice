@@ -18,4 +18,5 @@ export const user_information = pgTable('user_information', {
   id: serial('id').primaryKey(),
   name: varchar('name'),
   address: varchar('address'),
+  admin_id: varchar('admin_id'),
 })
