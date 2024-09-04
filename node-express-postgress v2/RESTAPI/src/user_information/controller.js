@@ -9,7 +9,16 @@ export const addUserInfo = async (req, res) => {
   try {
     const name = req.body.name
     const address = req.body.address
-    const admin_id = parseInt(req.user.id)
+    const admin_id = req.body.admin_id
+
+    const checkDuplicate = await db
+      .select()
+      .from(user_information)
+      .where(eq(user_information.admin_id, admin_id))
+
+    if (checkDuplicate.length > 0) {
+      res.json('Only one user information can be added')
+    }
 
     await db
       .insert(user_information)
