@@ -1,11 +1,9 @@
 import path from 'path'
-
 import { payloadCloud } from '@payloadcms/plugin-cloud'
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { webpackBundler } from '@payloadcms/bundler-webpack'
 import { slateEditor } from '@payloadcms/richtext-slate'
 import { buildConfig } from 'payload/config'
-
 import Users from './collections/Users'
 import { Posts } from './collections/Posts'
 import { Comments } from './collections/Comments'
