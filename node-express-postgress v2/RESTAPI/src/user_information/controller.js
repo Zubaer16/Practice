@@ -88,13 +88,15 @@ export const deleteUserById = async (req, res) => {
     const getUser = await db
       .select()
       .from(user_information)
-      .where(eq(user_information.id, userId))
+      .where(eq(user_information.admin_id, userId))
       .execute()
     if (getUser.length == 0) {
       return res.send('User does not exist in the database')
     }
 
-    await db.delete(user_information).where(eq(user_information.id, userId))
+    await db
+      .delete(user_information)
+      .where(eq(user_information.admin_id, userId))
 
     res.json('User deleted successfully')
   } catch (error) {
