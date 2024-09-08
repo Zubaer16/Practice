@@ -7,22 +7,22 @@ dotenv.config()
 
 export const addUserInfo = async (req, res) => {
   try {
+    const id = req.body.id
     const name = req.body.name
     const address = req.body.address
-    const admin_id = req.body.admin_id
 
-    const checkDuplicate = await db
-      .select()
-      .from(user_information)
-      .where(eq(user_information.admin_id, admin_id))
+    // const checkDuplicate = await db
+    //   .select()
+    //   .from(user_information)
+    //   .where(eq(user_information.id, id))
 
-    if (checkDuplicate.length > 0) {
-      res.json('Only one user information can be added')
-    }
+    // if (checkDuplicate.length > 0) {
+    //   res.json('Only one user information can be added')
+    // }
 
     await db
       .insert(user_information)
-      .values({ name: name, address: address, admin_id: admin_id })
+      .values({ id: id, name: name, address: address })
     res.json('User added successfully')
   } catch (error) {
     console.log(error)
@@ -88,15 +88,13 @@ export const deleteUserById = async (req, res) => {
     const getUser = await db
       .select()
       .from(user_information)
-      .where(eq(user_information.admin_id, userId))
+      .where(eq(user_information.id, userId))
       .execute()
     if (getUser.length == 0) {
       return res.send('User does not exist in the database')
     }
 
-    await db
-      .delete(user_information)
-      .where(eq(user_information.admin_id, userId))
+    await db.delete(user_information).where(eq(user_information.id, userId))
 
     res.json('User deleted successfully')
   } catch (error) {
