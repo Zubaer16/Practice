@@ -10,6 +10,8 @@ import { Comments } from './collections/Comments'
 import { customApi } from './api/customApi'
 import { Organizations } from './collections/Organizations'
 import { Applicants } from './collections/Applicants'
+import { organizationsController } from './controller/organizationsController'
+import { organizationsAuth } from './auth/organizationsAuth'
 
 export default buildConfig({
   admin: {
@@ -31,6 +33,8 @@ export default buildConfig({
     },
   }),
   onInit: async (payload) => {
-    customApi(payload.express, payload)
+    customApi(payload.express, payload),
+      organizationsController(payload.express, payload),
+      organizationsAuth(payload.express, payload)
   },
 })
