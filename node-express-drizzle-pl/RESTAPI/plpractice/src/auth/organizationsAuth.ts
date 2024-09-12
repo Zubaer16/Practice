@@ -12,7 +12,7 @@ export const organizationsAuth = (app: Express, payload: Payload) => {
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email, password are required.' })
-    } //
+    }
 
     try {
       const checkemail = await payload.find({
