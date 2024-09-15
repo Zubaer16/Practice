@@ -52,7 +52,6 @@ export const organizationsAuth = (app: Express, payload: Payload) => {
     const JWT_ACCESS = process.env.ORG_ACCESS_TOKEN
     const JWT_REFRESH = process.env.ORG_REFRESH_TOKEN
 
-    //   res.json(refreshToken)
     if (!refreshToken) {
       return res.status(400).json({ message: 'Refresh token is required.' })
     }
@@ -60,19 +59,19 @@ export const organizationsAuth = (app: Express, payload: Payload) => {
     try {
       // Verify the refresh token
       const decoded = JWT.verify(refreshToken, JWT_REFRESH)
-      // return res.json(decoded.length)
+
       // Generate a new access token
       const accessToken = JWT.sign(
         { userId: (decoded as { userId: String }).userId },
         JWT_ACCESS,
-        { expiresIn: '1d' } // Example: 15 minutes expiration
+        { expiresIn: '1d' }
       )
 
       // Optionally generate a new refresh token
       const newRefreshToken = JWT.sign(
         { userId: (decoded as { userId: String }).userId },
         JWT_REFRESH,
-        { expiresIn: '2d' } // Example: 7 days expiration
+        { expiresIn: '2d' }
       )
 
       // Send the new tokens in the response
