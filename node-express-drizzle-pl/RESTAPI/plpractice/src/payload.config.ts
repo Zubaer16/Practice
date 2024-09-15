@@ -12,6 +12,7 @@ import { Organizations } from './collections/Organizations'
 import { Applicants } from './collections/Applicants'
 import { organizationsController } from './controller/organizationsController'
 import { organizationsAuth } from './auth/organizationsAuth'
+import { generateTokens } from './auth/generateTokens'
 
 export default buildConfig({
   admin: {
@@ -36,5 +37,6 @@ export default buildConfig({
     customApi(payload.express, payload),
       organizationsController(payload.express, payload),
       organizationsAuth(payload.express, payload)
+    generateTokens(payload.express, payload)
   },
 })
