@@ -13,6 +13,7 @@ import { Applicants } from './collections/Applicants'
 import { organizationsController } from './controller/organizationsController'
 import { organizationsAuth } from './auth/organizationsAuth'
 import { generateTokens } from './auth/generateTokens'
+import { applicantsAuth } from './auth/applicantsAuth'
 
 export default buildConfig({
   admin: {
@@ -34,9 +35,10 @@ export default buildConfig({
     },
   }),
   onInit: async (payload) => {
-    customApi(payload.express, payload),
-      organizationsController(payload.express, payload),
-      organizationsAuth(payload.express, payload)
+    customApi(payload.express, payload)
+    organizationsController(payload.express, payload)
+    organizationsAuth(payload.express, payload)
     generateTokens(payload.express, payload)
+    applicantsAuth(payload.express, payload)
   },
 })

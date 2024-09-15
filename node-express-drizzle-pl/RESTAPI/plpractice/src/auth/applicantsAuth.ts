@@ -4,11 +4,11 @@ import JWT from 'jsonwebtoken'
 import dotenv from 'dotenv'
 dotenv.config
 
-export const organizationsAuth = (app: Express, payload: Payload) => {
-  app.post('/api/organization-login', async (req: Request, res: Response) => {
+export const applicantsAuth = (app: Express, payload: Payload) => {
+  app.post('/api/applicant-login', async (req: Request, res: Response) => {
     const { email, password } = req.body
-    const JWT_ACCESS = process.env.ORG_ACCESS_TOKEN
-    const JWT_REFRESH = process.env.ORG_REFRESH_TOKEN
+    const JWT_ACCESS = process.env.APPLICANT_ACCESS_TOKEN
+    const JWT_REFRESH = process.env.APPLICANT_REFRESH_TOKEN
 
     if (!email || !password) {
       return res.status(400).json({ message: 'Email, password are required.' })
@@ -16,7 +16,7 @@ export const organizationsAuth = (app: Express, payload: Payload) => {
 
     try {
       const checkemail = await payload.find({
-        collection: 'organizations',
+        collection: 'applicants',
         where: {
           email: {
             equals: email,
