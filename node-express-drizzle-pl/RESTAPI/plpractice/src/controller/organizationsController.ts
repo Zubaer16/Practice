@@ -1,10 +1,12 @@
 import { Request, Response, Express, NextFunction } from 'express'
-import { Payload } from 'payload'
+import payload, { Payload } from 'payload'
 import JWT from 'jsonwebtoken'
+import { jwtDecode } from 'jwt-decode'
 
 export const organizationsController = (app: Express, payload: Payload) => {
   app.post(
     '/api/organization-register',
+    verifyToken,
     async (req: Request, res: Response) => {
       const { email, password } = req.body
 
@@ -44,36 +46,56 @@ export const organizationsController = (app: Express, payload: Payload) => {
   )
 }
 
-// const getPermission = async (req:Request, res:Response,next: NextFunction ) => {
-//   const email = req.user.email // Extracted from JWT token
+const getPermission = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const token =
+    req.headers.authorization && req.headers.authorization.split(' ')[1]
+  const decoded: any = jwtDecode(token)
+  const email = decoded.user.email // Extracted from JWT token
 
-//   try {
-//     const permission =
-//     const user = permission[0]
+  try {
+    const permission = payload.find({
+      collection: 'organizations',
+      where: {
+        email: {
+          equals: email,
+        },
+      },
+    })
+    const user = permission[0]
 
-//     if (user.status == 'user') {
-//       return res.status(403).json({ message: 'Access denied' })
-//     }
-//     next()
-//   } catch (err) {
-//     res.status(400).json({ error: err.message })
+    if (user.length != 'user') {
+      return res.status(403).json({ message: 'Access denied' })
+    }
+    next()
+  } catch (err) {
+    res.status(400).json({ error: err.message })
+  }
+}
+
+// declare module 'express' {
+//   interface Request {
+//     user?: any // You can specify the type of the user object (e.g., JWT payload type)
 //   }
 // }
 
-//  function verifyToken(req: Request, res:Response, next:NextFunction) {
-//   const token =
-//     req.headers.authorization && req.headers.authorization.split(' ')[1]
+function verifyToken(req: Request, res: Response, next: NextFunction) {
+  const token =
+    req.headers.authorization && req.headers.authorization.split(' ')[1]
+  const JWT_ACCESS = process.env.ORG_ACCESS_TOKEN
 
-//   if (!token) {
-//     return res.status(401).json({ message: 'Missing token' })
-//   }
+  if (!token) {
+    return res.status(401).json({ message: 'Missing token' })
+  }
 
-//   try {
-//     const decoded = JWT.verify(token, process.env.ACCESS_TOKEN)
-//     req.user = decoded
-//     next()
-//   } catch (error) {
-//     console.error('Token verification failed:', error.message)
-//     res.status(401).json({ message: 'Invalid token' })
-//   }
-// }
+  try {
+    JWT.verify(token, JWT_ACCESS)
+    next()
+  } catch (error) {
+    console.error('Token verification failed:', error.message)
+    res.status(401).json({ message: 'Invalid token' })
+  }
+}
