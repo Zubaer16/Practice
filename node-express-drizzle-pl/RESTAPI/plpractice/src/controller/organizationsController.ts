@@ -6,7 +6,6 @@ import { jwtDecode } from 'jwt-decode'
 export const organizationsController = (app: Express, payload: Payload) => {
   app.post(
     '/api/organization-register',
-    verifyToken,
     async (req: Request, res: Response) => {
       const { email, password } = req.body
 
@@ -54,10 +53,10 @@ const getPermission = async (
   const token =
     req.headers.authorization && req.headers.authorization.split(' ')[1]
   const decoded: any = jwtDecode(token)
-  const email = decoded.user.email // Extracted from JWT token
+  const email = decoded.user[0].email // Extracted from JWT token
 
   try {
-    const permission = payload.find({
+    const permission = await payload.find({
       collection: 'organizations',
       where: {
         email: {
@@ -65,9 +64,10 @@ const getPermission = async (
         },
       },
     })
-    const user = permission[0]
 
-    if (user.length != 'user') {
+    // return res.json(permission.docs)
+
+    if (permission.docs.length == 0) {
       return res.status(403).json({ message: 'Access denied' })
     }
     next()
