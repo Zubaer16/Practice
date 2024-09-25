@@ -1,5 +1,5 @@
 import { Request, Response, Express } from 'express'
-import { Payload } from 'payload'
+import payload, { Payload } from 'payload'
 
 export const customApi = (app: Express, payload: Payload) => {
   app.get('/api/custom/posts', async (req: Request, res: Response) => {
@@ -16,3 +16,8 @@ export const customApi = (app: Express, payload: Payload) => {
   })
 }
 //
+
+const myQuery = payload.find({
+  collection: 'posts',
+  limit: 10,
+})
