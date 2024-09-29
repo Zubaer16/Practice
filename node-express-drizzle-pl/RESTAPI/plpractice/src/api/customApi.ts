@@ -15,7 +15,6 @@ export const customApi = (app: Express, payload: Payload) => {
     }
   })
 }
-//
 
 const myQuery = payload.find({
   collection: 'posts',
