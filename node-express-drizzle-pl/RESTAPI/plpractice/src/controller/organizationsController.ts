@@ -65,8 +65,6 @@ const getPermission = async (
       },
     })
 
-    // return res.json(permission.docs)
-
     if (permission.docs.length == 0) {
       return res.status(403).json({ message: 'Access denied' })
     }
