@@ -79,7 +79,7 @@ const getPermission = async (
 //     user?: any // You can specify the type of the user object (e.g., JWT payload type)
 //   }
 // }
-
+//
 function verifyToken(req: Request, res: Response, next: NextFunction) {
   const token =
     req.headers.authorization && req.headers.authorization.split(' ')[1]
