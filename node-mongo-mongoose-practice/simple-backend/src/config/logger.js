@@ -1,12 +1,11 @@
-import winston, { error } from 'winston'
-import config from './config.js'
-import { object } from 'joi'
+import winston from 'winston'
+import { config } from './config.js'
 
 const enumerateErrorFormat = winston.format((info) => {
   if (info instanceof Error) {
     object.assign(info, { message: info.stack })
   }
-  return error
+  return info
 })
 
 const logger = winston.createLogger({
