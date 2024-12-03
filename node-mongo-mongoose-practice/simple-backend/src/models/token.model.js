@@ -14,5 +14,5 @@ const tokenSchema = mongoose.Schema({
     required: true,
   },
   type: String,
-  enum: [tokenTypes.REFRESH, token],
+  enum: [tokenTypes.REFRESH, tokenTypes.RESET_PASSWORD],
 })
