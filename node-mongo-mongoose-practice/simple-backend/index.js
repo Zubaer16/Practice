@@ -1,18 +1,10 @@
-import express from 'express'
 import mongoose from 'mongoose'
+import app from './app.js'
 import { config } from './src/config/config.js'
 import logger from './src/config/logger.js'
-// import bodyParser from 'body-parser'
-import userRoutes from './src/routes/userRoutes.js'
 
 let server
-const app = express()
-const PORT = 5000
 
-// Middleware
-// app.use(bodyParser.json())
-
-// Database connection
 mongoose
   .connect(config.mongoose.url)
   .then(() => logger.info('Connected to MongoDB'))
@@ -20,10 +12,28 @@ server = app.listen(config.port, () => {
   logger.info(`Listening to port ${config.port}`)
 })
 
-// Routes
-app.use('/api/users', userRoutes)
+const exitHandler = () => {
+  if (server) {
+    server.close(() => {
+      logger.info('Server closed')
+      process.exit(1)
+    })
+  } else {
+    process.exit(1)
+  }
+}
 
-// Start server
-// app.listen(PORT, () =>
-//   console.log(`Server running on http://localhost:${PORT}`)
-// )
+const unexpectedErrorHandler = (error) => {
+  logger.error(error)
+  exitHandler()
+}
+
+process.on('uncaughtException', unexpectedErrorHandler)
+process.on('unhandledRejection', unexpectedErrorHandler)
+
+process.on('SIGTERM', () => {
+  logger.info('SIGTERM received')
+  if (server) {
+    server.close()
+  }
+})
