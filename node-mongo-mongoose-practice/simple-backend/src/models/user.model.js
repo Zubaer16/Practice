@@ -1,13 +1,33 @@
 import mongoose from 'mongoose'
-// import validator from 'validator'
+import validator from 'validator'
 import bcrypt from 'bcrypt'
 import toJSON from './plugins/toJSON.plugin.js'
 import paginate from './plugins/paginate.plugin.js'
 // import { roles } from '../config/roles.js'
 
 const userSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
+  name: { type: String, required: true, trim: true },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    validate(value){
+      if(!validator.isEmail(value)){
+        throw new Error ('Invalid email')
+      }
+    }
+  },
+  password:{
+    type: String,
+    required: true,
+    trim: true,
+    minlength: 8,
+    validate(value){
+      if(!value.match(/\d/) || )
+    }
+  },
   age: { type: Number, required: true },
 })
 userSchema.plugin(toJSON)
