@@ -1,6 +1,7 @@
 import express from 'express'
 import bodyParser from 'body-parser'
 import SibApiV3Sdk from 'sib-api-v3-sdk'
+import cron from 'node-cron'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -57,6 +58,13 @@ async function sendEmails() {
     console.error('Error sending emails:', error)
   }
 }
+
+// Cron job to send emails 1 minute after the server starts
+cron.schedule('*/1 * * * *', async () => {
+  console.log('Cron job started: Sending emails...')
+  await sendEmails()
+  console.log('Cron job completed')
+})
 
 // Endpoint to trigger email sending
 app.get('/send-emails', async (req, res) => {
