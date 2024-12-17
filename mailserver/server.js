@@ -19,12 +19,12 @@ const emailData = {
     subject: 'testSubject',
     mails: [
       {
-        to: 'zubaer.16@gmail.com',
+        to: 'mashrur.rahman333@gmail.com',
         name: 'User 1',
         description: 'This is a description for User 1.',
       },
       {
-        to: 'zubaer.ahmed@fintechhub.com.bd',
+        to: 'emamjion@gmail.com',
         name: 'User 2',
         description: 'This is a description for User 2.',
       },
