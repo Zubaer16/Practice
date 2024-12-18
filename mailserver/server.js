@@ -130,11 +130,11 @@ async function sendBulkEmails() {
 }
 
 // Cron job to send emails 1 minute after the server starts
-cron.schedule('*/1 * * * *', async () => {
-  console.log('Cron job started: Sending bulk emails...')
-  await sendBulkEmails()
-  console.log('Cron job completed')
-})
+// cron.schedule('*/1 * * * *', async () => {
+//   console.log('Cron job started: Sending bulk emails...')
+//   await sendBulkEmails()
+//   console.log('Cron job completed')
+// })
 
 // Endpoint to trigger email sending
 app.get('/send-emails', async (req, res) => {
@@ -149,3 +149,5 @@ const PORT = 3000
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
 })
+
+console.log(recipients)
