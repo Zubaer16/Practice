@@ -9,30 +9,21 @@ dotenv.config()
 
 const app = express()
 
-const unsubscribedApiToken = process.env.UNSUBSCRIBED_API_TOKEN
-// const unsubscribedApiUrl = process.env.UNSUBSCRIBED_API_URL
-const unsubscribedApiUrlTest = process.env.UNSUBSCRIBED_API_URL_TEST
+const nonSubscriberApiToken = process.env.NONSUBSCRIBER_API_TOKEN
+// const nonSubscribedApiUrl = process.env.NONSUBSCRIBER
+const nonSubscriberApiUrlTest = process.env.NONSUBSCRIBER_API_URL_TEST
 const apiKey = process.env.EMAIL_SERVICE_SECRET
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance
 const apiKeyInstance = defaultClient.authentications['api-key']
 apiKeyInstance.apiKey = apiKey
 
-const fetchUnsubscribedUsers = async () => {
+const fetchNonSubscribers = async () => {
   try {
-    const { data } = await axios.get(unsubscribedApiUrlTest, {
+    const { data } = await axios.get(nonSubscriberApiUrlTest, {
       headers: {
-        Authorization: `Bearer ${unsubscribedApiToken}`,
+        Authorization: `Bearer ${nonSubscriberApiToken}`,
       },
-      // params: {
-      //   populate: '*',
-      //   // filters: { 'subscription_plan[planName][$eq]': 'Free' },
-      //   // 'pagination[pageSize]': 120,
-      //   // 'pagination[page]': 1,
-      //   // filters: { 'subscription_plan[planName][$eq]': 'Free' },
-      //   // filters: { 'users_permissions_user[username][$eq]': 'zubaer' },
-      //   filters: { 'users_permissions_user[username][$eq]': 'rafin333' },
-      // },
     })
     return data.data // Return the subscriptions array
   } catch (error) {
@@ -44,28 +35,28 @@ const fetchUnsubscribedUsers = async () => {
   }
 }
 
-const extractUnsubscribedEmails = (unsubscribed) => {
-  const unsubscribedEmails = unsubscribed.map(
+const extractNonSubscriberEmails = (nonSubscriber) => {
+  const nonSubscriberEmails = nonSubscriber.map(
     (item) => item.users_permissions_user?.email
   )
-  if (unsubscribedEmails.length === 0) {
+  if (nonSubscriberEmails.length === 0) {
     console.log('No emails found for sending.')
     return []
   }
-  return unsubscribedEmails // Return the correct variable
+  return nonSubscriberEmails // Return the correct variable
 }
 
 /**
  * Send emails using Brevo API.
  * @param {string[]} emails - List of email addresses to send emails to.
  */
-const sendUnsubscribedEmails = async (unsubscribedEmails) => {
-  if (unsubscribedEmails.length === 0) {
+const sendNonSubscriberEmails = async (nonSubscriberEmails) => {
+  if (nonSubscriberEmails.length === 0) {
     console.log('No emails to send.')
     return
   }
 
-  const emailList = unsubscribedEmails.map((email) => ({ email }))
+  const emailList = nonSubscriberEmails.map((email) => ({ email }))
   const transactionalEmailsApi = new SibApiV3Sdk.TransactionalEmailsApi()
 
   const sendSmtpEmail = {
@@ -132,7 +123,7 @@ const sendUnsubscribedEmails = async (unsubscribedEmails) => {
 
   try {
     await transactionalEmailsApi.sendTransacEmail(sendSmtpEmail)
-    console.log('Emails sent successfully to:', unsubscribedEmails)
+    console.log('Emails sent successfully to:', nonSubscriberEmails)
   } catch (error) {
     console.error(
       'Error sending emails:',
@@ -144,12 +135,11 @@ const sendUnsubscribedEmails = async (unsubscribedEmails) => {
 /**
  * Process subscriptions: Fetch data, extract emails, and send emails.
  */
-const processSubscriptions = async () => {
+const processNonSubscriberEmails = async () => {
   try {
-    const subscriptions = await fetchUnsubscribedUsers() // Fetch subscriptions
-    const emails = extractUnsubscribedEmails(subscriptions)
-
-    await sendUnsubscribedEmails(emails) // Send emails
+    const nonSubscribers = await fetchNonSubscribers() // Fetch subscriptions
+    const emails = extractNonSubscriberEmails(nonSubscribers)
+    await sendNonSubscriberEmails(emails) // Send emails
   } catch (error) {
     console.error('Error processing subscriptions:', error.message)
   }
@@ -158,17 +148,9 @@ const processSubscriptions = async () => {
 // Cron job to send emails 1 minute after the server starts
 cron.schedule('*/1 * * * *', async () => {
   console.log('Cron job started: Sending bulk emails...')
-  await processSubscriptions()
+  await processNonSubscriberEmails()
   console.log('Cron job completed')
 })
-
-// Endpoint to trigger email sending
-// app.get('/send-emails', async (req, res) => {
-//   await sendBulkEmails()
-//   res
-//     .status(200)
-//     .json({ message: 'Bulk email processing started. Check logs for details.' })
-// })
 
 // Start the server
 const PORT = 3000
