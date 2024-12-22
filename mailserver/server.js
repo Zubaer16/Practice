@@ -10,8 +10,7 @@ dotenv.config()
 const app = express()
 
 const nonSubscriberApiToken = process.env.NONSUBSCRIBER_API_TOKEN
-// const nonSubscribedApiUrl = process.env.NONSUBSCRIBER
-const nonSubscriberApiUrlTest = process.env.NONSUBSCRIBER_API_URL_TEST
+const nonSubscriberApiUrl = process.env.NONSUBSCRIBER_API_URL
 const apiKey = process.env.EMAIL_SERVICE_SECRET
 
 const defaultClient = SibApiV3Sdk.ApiClient.instance
@@ -20,7 +19,7 @@ apiKeyInstance.apiKey = apiKey
 
 const fetchNonSubscribers = async () => {
   try {
-    const { data } = await axios.get(nonSubscriberApiUrlTest, {
+    const { data } = await axios.get(nonSubscriberApiUrl, {
       headers: {
         Authorization: `Bearer ${nonSubscriberApiToken}`,
       },
@@ -33,17 +32,6 @@ const fetchNonSubscribers = async () => {
     )
     throw error
   }
-}
-
-const extractNonSubscriberEmails = (nonSubscriber) => {
-  const nonSubscriberEmails = nonSubscriber.map(
-    (item) => item.users_permissions_user?.email
-  )
-  if (nonSubscriberEmails.length === 0) {
-    console.log('No emails found for sending.')
-    return []
-  }
-  return nonSubscriberEmails // Return the correct variable
 }
 
 /**
@@ -137,22 +125,19 @@ const sendNonSubscriberEmails = async (nonSubscriberEmails) => {
  */
 const processNonSubscriberEmails = async () => {
   try {
-    const nonSubscribers = await fetchNonSubscribers() // Fetch subscriptions
-    const emails = extractNonSubscriberEmails(nonSubscribers)
-    await sendNonSubscriberEmails(emails) // Send emails
+    const emails = await fetchNonSubscribers()
+    await sendNonSubscriberEmails(emails)
   } catch (error) {
     console.error('Error processing subscriptions:', error.message)
   }
 }
 
-// Cron job to send emails 1 minute after the server starts
 cron.schedule('*/1 * * * *', async () => {
   console.log('Cron job started: Sending bulk emails...')
   await processNonSubscriberEmails()
   console.log('Cron job completed')
 })
 
-// Start the server
 const PORT = 3000
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`)
