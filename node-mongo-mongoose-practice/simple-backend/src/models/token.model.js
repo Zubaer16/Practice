@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import toJSON from './plugins/toJSON.plugin.js'
+import toJSON from './plugins/index.js'
 import { tokenTypes } from '../config/token.js'
 
 const tokenSchema = mongoose.Schema(
@@ -37,7 +37,7 @@ const tokenSchema = mongoose.Schema(
   }
 )
 
-tokenSchema.plugin(toJson)
+tokenSchema.plugin(toJSON)
 
 /**
  * @typedef Token
