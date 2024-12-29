@@ -1,9 +1,17 @@
-validate(userValidation.createUser)
+import Joi from 'joi'
+
+const createUser = {
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    // password: Joi.string().required().custom(password),
+    name: Joi.string().required(),
+    role: Joi.string().required().valid('user', 'admin'),
+  }),
+}
 
 const pick = (object, keys) => {
   return keys.reduce((obj, key) => {
     if (object && Object.prototype.hasOwnProperty.call(object, key)) {
-      // eslint-disable-next-line no-param-reassign
       obj[key] = object[key]
     }
     return obj
@@ -21,17 +29,31 @@ const validate = (schema) => (req, res, next) => {
     const errorMessage = error.details
       .map((details) => details.message)
       .join(', ')
-    return next(new ApiError(httpStatus.BAD_REQUEST, errorMessage))
+    console.error('Validation Error:', errorMessage) // Log error for testing
+    return next(`Validation Error: ${errorMessage}`) // Simulate error handling
   }
   Object.assign(req, value)
-  return next()
+  return next() // Continue middleware
 }
 
-const createUser = {
-  body: Joi.object().keys({
-    email: Joi.string().required().email(),
-    password: Joi.string().required().custom(password),
-    name: Joi.string().required(),
-    role: Joi.string().required().valid('user', 'admin'),
-  }),
+// Simulate request, response, and next
+const req = {
+  body: {
+    email: 'zubaer.ahmed7690@gmail.com', // Invalid email
+    name: 'John Doe',
+    role: 'admin',
+  },
 }
+
+const res = {}
+
+const next = (result) => {
+  if (result) {
+    console.error(result)
+  } else {
+    console.log('Validation passed:', req)
+  }
+}
+
+const myValid = validate(createUser)
+myValid(req, res, next)
