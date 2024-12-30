@@ -1,4 +1,13 @@
 import express from 'express'
+import auth from '../../middlewares/auth.js'
+import validate from '../../middlewares/validate.js'
+import {
+  createUser,
+  getUsers,
+  getUser,
+  updateUser,
+  deleteUser,
+} from '../../validation/index.js'
 import User from '../../models/user.model.js'
 const router = express.Router()
 
