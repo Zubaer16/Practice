@@ -1,7 +1,1 @@
-export {
-  createUser,
-  getUsers,
-  getUser,
-  updateUser,
-  deleteUser,
-} from './user.validation.js'
+export * as userValidation from './user.validation.js'

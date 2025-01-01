@@ -1,5 +1,5 @@
 import mongoose from 'mongoose'
-import toJSON from './plugins/index.js'
+import { toJSON } from './plugins/index.js'
 import { tokenTypes } from '../config/token.js'
 
 const tokenSchema = mongoose.Schema(
@@ -10,7 +10,7 @@ const tokenSchema = mongoose.Schema(
       index: true,
     },
     user: {
-      type: mongoose.SchemaType.ObjectId,
+      type: mongoose.SchemaTypes.ObjectId,
       ref: 'User',
       required: true,
     },
@@ -37,8 +37,8 @@ const tokenSchema = mongoose.Schema(
   }
 )
 
+// add plugin that converts mongoose to json
 tokenSchema.plugin(toJSON)
-
 /**
  * @typedef Token
  */
