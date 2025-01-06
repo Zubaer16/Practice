@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt'
 import { toJSON, paginate } from './plugins/index.js'
 import { roles } from '../config/roles.js'
 
-const userSchema = new mongoose.Schema({
+const userSchema = mongoose.Schema({
   name: { type: String, required: true, trim: true },
   email: {
     type: String,
