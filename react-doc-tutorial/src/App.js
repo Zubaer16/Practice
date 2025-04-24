@@ -1,25 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+const poem = {
+  lines: [
+    'I write, erase, rewrite',
+    'Erase again, and then',
+    'A poppy blooms.',
+  ],
 }
 
-export default App;
+export default function Poem() {
+  let output = []
+
+  // Fill the output array
+  poem.lines.forEach((line, i) => {
+    output.push(<hr key={i + '-separator'}></hr>)
+    output.push(<p key={i + '-text'}>{line}</p>)
+    //Remove the first <hr />
+  })
+  output.shift()
+  return <article>{output}</article>
+}
