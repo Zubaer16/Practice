@@ -1,54 +1,43 @@
 import { useState } from 'react'
+import { sculptureList } from './data.js'
 
-const initialList = [
-  { id: 0, title: 'Big Bellies', seen: false },
-  { id: 1, title: 'Lunar Landscape', seen: false },
-  { id: 2, title: 'Terracotta Army', seen: true },
-]
+export default function Gallery() {
+  const [index, setIndex] = useState(0)
+  const [showMore, setShowMore] = useState(false)
 
-export default function BucketList() {
-  const [list, setList] = useState(initialList)
-
-  function handleToggle(artworkId, nextSeen) {
-    setList(
-      list.map((artwork) => {
-        if (artwork.id === artworkId) {
-          console.log('milse')
-          return { ...artwork, seen: nextSeen }
-        } else {
-          console.log('milenai')
-          return artwork
-        }
-      })
-    )
+  function handleNextClick() {
+    setIndex(index + 1)
   }
 
+  function handlePreviousClick() {
+    setIndex(index - 1)
+  }
+
+  function handleMoreClick() {
+    setShowMore(!showMore)
+  }
+
+  let sculpture = sculptureList[index]
   return (
     <>
-      <h1>Art Bucket List</h1>
-      <h2>My list of art to see:</h2>
-      <ItemList artworks={list} onToggle={handleToggle} />
+      <button onClick={handleNextClick} disabled={index === 11}>
+        Next
+      </button>
+      <button onClick={handlePreviousClick} disabled={index === 0}>
+        Previous
+      </button>
+      <h2>
+        <i>{sculpture.name} </i>
+        by {sculpture.artist}
+      </h2>
+      <h3>
+        ({index + 1} of {sculptureList.length})
+      </h3>
+      <button onClick={handleMoreClick}>
+        {showMore ? 'Hide' : 'Show'} details
+      </button>
+      {showMore && <p>{sculpture.description}</p>}
+      <img src={sculpture.url} alt={sculpture.alt} />
     </>
-  )
-}
-
-function ItemList({ artworks, onToggle }) {
-  return (
-    <ul>
-      {artworks.map((artwork) => (
-        <li key={artwork.id}>
-          <label>
-            <input
-              type="checkbox"
-              checked={artwork.seen}
-              onChange={(e) => {
-                onToggle(artwork.id, e.target.checked)
-              }}
-            />
-            {artwork.title}
-          </label>
-        </li>
-      ))}
-    </ul>
   )
 }
