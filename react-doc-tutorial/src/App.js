@@ -1,43 +1,47 @@
 import { useState } from 'react'
-import { sculptureList } from './data.js'
 
-export default function Gallery() {
-  const [index, setIndex] = useState(0)
-  const [showMore, setShowMore] = useState(false)
+export default function Scoreboard() {
+  const [player, setPlayer] = useState({
+    firstName: 'Ranjani',
+    lastName: 'Shettar',
+    score: 10,
+  })
 
-  function handleNextClick() {
-    setIndex(index + 1)
+  function handlePlusClick() {
+    setPlayer({
+      ...player,
+      score: player.score + 1,
+    })
   }
 
-  function handlePreviousClick() {
-    setIndex(index - 1)
+  function handleFirstNameChange(e) {
+    setPlayer({
+      ...player,
+      firstName: e.target.value,
+    })
   }
 
-  function handleMoreClick() {
-    setShowMore(!showMore)
+  function handleLastNameChange(e) {
+    setPlayer({
+      ...player,
+      lastName: e.target.value,
+    })
   }
 
-  let sculpture = sculptureList[index]
   return (
     <>
-      <button onClick={handleNextClick} disabled={index === 11}>
-        Next
-      </button>
-      <button onClick={handlePreviousClick} disabled={index === 0}>
-        Previous
-      </button>
-      <h2>
-        <i>{sculpture.name} </i>
-        by {sculpture.artist}
-      </h2>
-      <h3>
-        ({index + 1} of {sculptureList.length})
-      </h3>
-      <button onClick={handleMoreClick}>
-        {showMore ? 'Hide' : 'Show'} details
-      </button>
-      {showMore && <p>{sculpture.description}</p>}
-      <img src={sculpture.url} alt={sculpture.alt} />
+      <label>
+        Score: <b>{player.score}</b>{' '}
+        <button onClick={handlePlusClick}>+1</button>
+      </label>
+      <label>
+        First name:
+        <input value={player.firstName} onChange={handleFirstNameChange} />
+      </label>
+      <label>
+        Last name:
+        <input value={player.lastName} onChange={handleLastNameChange} />
+      </label>
     </>
   )
 }
