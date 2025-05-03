@@ -1,46 +1,58 @@
 import { useState } from 'react'
-import Background from './Background.js'
-import Box from './Box.js'
+import AddTodo from './AddTodo.js'
+import TaskList from './TaskList.js'
 
-export default function Canvas() {
-  const initialPosition = {
-    x: 0,
-    y: 0,
-  }
-  const [shape, setShape] = useState({
-    color: 'orange',
-    position: initialPosition,
-  })
+let nextId = 3
+const initialTodos = [
+  { id: 0, title: 'Buy milk', done: true },
+  { id: 1, title: 'Eat tacos', done: false },
+  { id: 2, title: 'Brew tea', done: false },
+]
 
-  function handleMove(dx, dy) {
-    setShape({
-      ...shape,
-      position: {
-        ...shape.position,
-        x: shape.position.x + dx,
-        y: shape.position.y + dy,
+export default function TaskApp() {
+  const [todos, setTodos] = useState(initialTodos)
+
+  function handleAddTodo(title) {
+    setTodos([
+      ...todos,
+      {
+        id: nextId++,
+        title: title,
+        done: false,
       },
-    })
+    ])
   }
 
-  function handleColorChange(e) {
-    setShape({
-      ...shape,
-      color: e.target.value,
-    })
+  function handleChangeTodo(nextTodo) {
+    setTodos(
+      todos.map((t) => {
+        if (t.id === nextTodo.id) {
+          return nextTodo
+        } else {
+          return t
+        }
+      })
+    )
+
+    // const todo = todos.find((t) => t.id === nextTodo.id)
+    // todo.title = nextTodo.title
+    // todo.done = nextTodo.done
+  }
+
+  function handleDeleteTodo(todoId) {
+    setTodos(todos.filter((t) => t.id !== todoId))
+    // const index = todos.findIndex((t) => t.id === todoId)
+    // todos.splice(index, 1)
   }
 
   return (
     <>
-      <select value={shape.color} onChange={handleColorChange}>
-        <option value="orange">orange</option>
-        <option value="lightpink">lightpink</option>
-        <option value="aliceblue">aliceblue</option>
-      </select>
-      <Background position={initialPosition} />
-      <Box color={shape.color} position={shape.position} onMove={handleMove}>
-        Drag me!
-      </Box>
+      <AddTodo onAddTodo={handleAddTodo} />
+      <TaskList
+        todos={todos}
+        onChangeTodo={handleChangeTodo}
+        onDeleteTodo={handleDeleteTodo}
+      />
     </>
   )
 }
