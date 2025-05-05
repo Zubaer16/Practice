@@ -1,27 +1,59 @@
 import { useState } from 'react'
 
-export default function Picture() {
-  const [isActive, setIsActive] = useState(false)
-  if (isActive) {
-    return (
-      <div className="background" onClick={() => setIsActive(false)}>
-        <img
-          className="picture picture--active"
-          alt="Rainbow houses in Kampung Pelangi, Indonesia"
-          src="https://i.imgur.com/5qwVYb1.jpeg"
-          onClick={(e) => e.stopPropagation()}
-        />
-      </div>
-    )
+export default function EditProfile() {
+  const [firstName, setFirstName] = useState('Jane')
+  const [lastName, setLastName] = useState('Jacobs')
+  const [displayName, setDisplayName] = useState('')
+  const [displayInput, setDisplayInput] = useState('none')
+  const [buttonName, setButtonName] = useState('Edit Profile')
+
+  function handleSubmit(e) {
+    e.preventDefault()
+    if (buttonName === 'Edit Profile') {
+      setDisplayName('none')
+      setDisplayInput('')
+      setButtonName('Save')
+    } else if (buttonName === 'Save') {
+      setDisplayName('')
+      setDisplayInput('none')
+      setButtonName('Edit Profile')
+    }
   }
+
+  function handleFirstNameChange(e) {
+    setFirstName(e.target.value)
+  }
+
+  function handleLastNameChange(e) {
+    setLastName(e.target.value)
+  }
+
   return (
-    <div className="background background--active">
-      <img
-        className="picture"
-        alt="Rainbow houses in Kampung Pelangi, Indonesia"
-        src="https://i.imgur.com/5qwVYb1.jpeg"
-        onClick={() => setIsActive(true)}
-      />
-    </div>
+    <form>
+      <label>
+        First name: <b style={{ display: displayName }}>{firstName}</b>
+        <input
+          onChange={handleFirstNameChange}
+          style={{ display: displayInput }}
+          value={firstName}
+        />
+      </label>
+      <label>
+        Last name: <b style={{ display: displayName }}>{lastName}</b>
+        <input
+          onChange={handleLastNameChange}
+          style={{ display: displayInput }}
+          value={{ lastName }}
+        />
+      </label>
+      <button onClick={handleSubmit} type="submit">
+        {buttonName}
+      </button>
+      <p>
+        <i>
+          Hello, {firstName} {lastName}!
+        </i>
+      </p>
+    </form>
   )
 }
