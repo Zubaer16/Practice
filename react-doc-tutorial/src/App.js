@@ -1,23 +1,31 @@
 import { useState } from 'react'
 
-function Input({ label, value, onChange }) {
+export default function App() {
+  const [showHint, setShowHint] = useState(false)
   return (
-    <label>
-      {label} <input value={value} onChange={onChange} />
-    </label>
+    <div>
+      {showHint && (
+        <p>
+          <i>Hint: Your favorite city?</i>
+        </p>
+      )}
+      <Form />
+      {showHint ? (
+        <button
+          onClick={() => {
+            setShowHint(false)
+          }}
+        >
+          Hide hint
+        </button>
+      ) : (
+        <button onClick={() => setShowHint(true)}>Show hint</button>
+      )}
+    </div>
   )
 }
 
-export default function SyncedInputs() {
+function Form() {
   const [text, setText] = useState('')
-  function handleChange(e) {
-    setText(e.target.value)
-  }
-
-  return (
-    <>
-      <Input label="First input" value={text} onChange={handleChange} />
-      <Input label="Second input" value={text} onChange={handleChange} />
-    </>
-  )
+  return <textarea value={text} onChange={(e) => setText(e.target.value)} />
 }
