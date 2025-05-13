@@ -1,59 +1,42 @@
 import { useState } from 'react'
+import { letters } from './data.js'
+import Letter from './Letter.js'
 
-export default function EditProfile() {
-  const [firstName, setFirstName] = useState('Jane')
-  const [lastName, setLastName] = useState('Jacobs')
-  const [displayName, setDisplayName] = useState('')
-  const [displayInput, setDisplayInput] = useState('none')
-  const [buttonName, setButtonName] = useState('Edit Profile')
+export default function MailClient() {
+  const [selectedId, setSelectedId] = useState([])
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    if (buttonName === 'Edit Profile') {
-      setDisplayName('none')
-      setDisplayInput('')
-      setButtonName('Save')
-    } else if (buttonName === 'Save') {
-      setDisplayName('')
-      setDisplayInput('none')
-      setButtonName('Edit Profile')
-    }
-  }
+  // TODO: allow multiple selection
+  const selectedCount = selectedId.length
 
-  function handleFirstNameChange(e) {
-    setFirstName(e.target.value)
-  }
-
-  function handleLastNameChange(e) {
-    setLastName(e.target.value)
+  function handleToggle(toggledId) {
+    // TODO: allow multiple selection
+    setSelectedId(toggledId)
   }
 
   return (
-    <form>
-      <label>
-        First name: <b style={{ display: displayName }}>{firstName}</b>
-        <input
-          onChange={handleFirstNameChange}
-          style={{ display: displayInput }}
-          value={firstName}
-        />
-      </label>
-      <label>
-        Last name: <b style={{ display: displayName }}>{lastName}</b>
-        <input
-          onChange={handleLastNameChange}
-          style={{ display: displayInput }}
-          value={{ lastName }}
-        />
-      </label>
-      <button onClick={handleSubmit} type="submit">
-        {buttonName}
-      </button>
-      <p>
-        <i>
-          Hello, {firstName} {lastName}!
-        </i>
-      </p>
-    </form>
+    <>
+      <h2>Inbox</h2>
+      <ul>
+        {letters.map((letter) => (
+          <Letter
+            key={letter.id}
+            letter={letter}
+            isSelected={
+              // TODO: allow multiple selection
+              selectedId === null ? letter.isStarred : letter.id === selectedId
+            }
+            onToggle={handleToggle}
+          />
+        ))}
+        <hr />
+        <p>
+          <b>
+            You selected{' '}
+            {letters.filter((letter) => letter.isStarred === true).length}{' '}
+            letters
+          </b>
+        </p>
+      </ul>
+    </>
   )
 }
