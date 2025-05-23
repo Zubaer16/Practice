@@ -1,12 +1,15 @@
 import { useRef } from 'react'
-
-export default function Counter() {
-  let ref = useRef(0)
-
+export default function Page() {
+  const ref = useRef(null)
   function handleClick() {
-    ref.current = ref.current + 1
-    alert('You clicked' + ref.current + ' times!')
+    ref.current.focus()
   }
-
-  return <button onClick={handleClick}>Click me!</button>
+  return (
+    <>
+      <nav>
+        <button onClick={handleClick}>Search</button>
+      </nav>
+      <input placeholder="Looking for something?" ref={ref} />
+    </>
+  )
 }
