@@ -1,39 +1,47 @@
-import { useState, useEffect } from 'react'
-import { fetchBio } from './api.js'
+import { useState } from 'react'
+import ChatRoom from './ChatRoom.js'
 
-export default function Page() {
-  const [person, setPerson] = useState('Alice')
-  const [bio, setBio] = useState(null)
+import { showNotification } from './notifications.js'
 
-  useEffect(() => {
-    let ignore = false
-    setBio(null)
-    fetchBio(person).then((result) => {
-      if (!ignore) {
-        setBio(result)
-      }
-    })
-    return () => {
-      ignore = true
-    }
-  }, [person])
+export default function App() {
+  const [isDark, setIsDark] = useState(false)
+  const [roomId, setRoomId] = useState('general')
+  const [isEncrypted, setIsEncrypted] = useState(false)
 
   return (
     <>
-      <select
-        value={person}
-        onChange={(e) => {
-          setPerson(e.target.value)
-        }}
-      >
-        <option value="Alice">Alice</option>
-        <option value="Bob">Bob</option>
-        <option value="Taylor">Taylor</option>
-      </select>
+      <label>
+        <input
+          type="checkbox"
+          checked={isDark}
+          onChange={(e) => setIsDark(e.target.checked)}
+        />
+        Use dark theme
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          checked={isEncrypted}
+          onChange={(e) => setIsEncrypted(e.target.checked)}
+        />
+        Enable encryption
+      </label>
+      <label>
+        Choose the chat room:{' '}
+        <select value={roomId} onChange={(e) => setRoomId(e.target.value)}>
+          <option value="general">general</option>
+          <option value="travel">travel</option>
+          <option value="music">music</option>
+        </select>
+      </label>
       <hr />
-      <p>
-        <i>{bio ?? 'Loading...'}</i>
-      </p>
+      <ChatRoom
+        roomId={roomId}
+        isEncrypted={isEncrypted}
+        onMessage={(msg) => {
+          showNotification('New message: ' + msg, isDark ? 'dark' : 'light')
+        }}
+      />
     </>
   )
 }
