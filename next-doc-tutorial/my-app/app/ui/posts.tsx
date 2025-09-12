@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export default function Post({ post }: { post: string }) {
+export default function Posts({ post }: { post: string }) {
   return (
     <ul>
       <li key={'myPost'}>
