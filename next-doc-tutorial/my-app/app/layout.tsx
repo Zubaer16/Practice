@@ -1,7 +1,6 @@
 import Link from 'next/link'
 import Page from './page'
 import ThemeProvider from './theme-provider'
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html>
@@ -14,6 +13,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           {/* <main>{children}</main> */}
           <ThemeProvider>{children}</ThemeProvider>
         </nav>
+        {children}
       </body>
     </html>
   )
